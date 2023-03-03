@@ -69,4 +69,21 @@ sequenceDiagram
     
 ```
 
+t.0.6 
+
+```mermaid
+sequenceDiagram
+    participant browser
+    participant server
     
+    browser->>server: POST https://studies.cs.helsinki.fi/exampleapp/spa
+    activate server
+    server-->>browser: {"message":"note created"}
+    
+    Note right of browser: The note is added but the note list and the site are not reloaded
+    
+    deactivate server
+    
+    
+    
+```
