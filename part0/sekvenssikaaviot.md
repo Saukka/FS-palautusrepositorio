@@ -1,4 +1,4 @@
-    t.0.4:
+    t.0.4
 
 ```mermaid
 sequenceDiagram
@@ -69,7 +69,7 @@ sequenceDiagram
     
 ```
 
-t.0.6 
+    t.0.6 
 
 ```mermaid
 sequenceDiagram
