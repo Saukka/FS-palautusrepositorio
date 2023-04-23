@@ -15,11 +15,34 @@ const Button = (props) => (
   </button>
 )
 
-const Value = (props) => (
-  <div>
-    {props.name} {props.count} {props.unit}
-  </div>
-)
+const Statistics = ({stats}) => {
+  if (stats[3] == 0) {
+    return (
+      <div>
+        No feedback given
+      </div>
+    )
+  }
+  return (
+    <div>
+      <StatisticLine text="good" value={stats[0]}/>
+      <StatisticLine text="neutral" value={stats[1]}/>
+      <StatisticLine text="bad" value={stats[2]}/>
+      <StatisticLine text="all" value={stats[3]}/>
+      <StatisticLine text="average" value={stats[4]}/>
+      <StatisticLine text="positive" value={stats[5] * 100} unit="%"/>
+    </div>
+  )
+}
+
+const StatisticLine = (props) => {
+  console.log(props)
+  return (
+    <div>
+      {props.text} {props.value} {props.unit}
+    </div>
+  )
+}
 
 const App = () => {
   const [good, setGood] = useState(0)
@@ -28,6 +51,7 @@ const App = () => {
   const [all, setAll] = useState(0)
   const [average, setAverage] = useState(0)
   const [positive, setPositive] = useState(0)
+  const stats = [good, neutral, bad, all, average, positive]
 
   const updateValues = (newGood, newBad) => {
     const newAll = all + 1
@@ -43,7 +67,7 @@ const App = () => {
   const handleGoodClick = () => {
     const newGood = good + 1
     setGood(newGood)
-    updateValues(newGood, 0, bad)
+    updateValues(newGood, bad)
   }
 
   const handleNeutralClick = () => {
@@ -66,14 +90,10 @@ const App = () => {
       <Button handleClick={handleBadClick} text="bad"/>
 
       <Header text="statistics"/>
-      <Value name="good" count={good}/>
-      <Value name="neutral" count={neutral}/>
-      <Value name="bad" count={bad}/>
-      <Value name="all" count={all}/>
-      <Value name="average" count={average}/>
-      <Value name="positive" count={positive * 100} unit="%"/> 
+      <Statistics stats={stats}/>
     </div>
   )
 }
 
 export default App;
+
