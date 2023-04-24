@@ -25,22 +25,27 @@ const Statistics = ({stats}) => {
   }
   return (
     <div>
-      <StatisticLine text="good" value={stats[0]}/>
-      <StatisticLine text="neutral" value={stats[1]}/>
-      <StatisticLine text="bad" value={stats[2]}/>
-      <StatisticLine text="all" value={stats[3]}/>
-      <StatisticLine text="average" value={stats[4]}/>
-      <StatisticLine text="positive" value={stats[5] * 100} unit="%"/>
+      <table>
+        <tbody>
+          <StatisticLine text="good" value={stats[0]}/>
+          <StatisticLine text="neutral" value={stats[1]}/>
+          <StatisticLine text="bad" value={stats[2]}/>
+          <StatisticLine text="all" value={stats[3]}/>
+          <StatisticLine text="average" value={stats[4]}/>
+          <StatisticLine text="positive" value={stats[5] * 100} unit="%"/>
+        </tbody>
+      </table>
     </div>
   )
 }
 
 const StatisticLine = (props) => {
-  console.log(props)
   return (
-    <div>
-      {props.text} {props.value} {props.unit}
-    </div>
+    <tr>
+      <td>{props.text}</td>
+      <td>{props.value}</td>
+      <td>{props.unit}</td>
+    </tr>
   )
 }
 
