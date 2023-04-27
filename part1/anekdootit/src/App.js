@@ -7,6 +7,14 @@ const Button = (props) => (
   </button>
 )
 
+const Header = ({text}) => {
+  return (
+    <div>
+      <h1>{text}</h1>
+    </div>
+  )
+}
+
 const App = () => {
   const anecdotes = [
     'If it hurts, do it more often.',
@@ -22,6 +30,8 @@ const App = () => {
   const [selected, setSelected] = useState(0)
   const [points, setPoints] = useState(new Uint8Array(8))
   const [selectedVotes, setVotes] = useState(0)
+  const [mostVotes, setMostVotes] = useState(0)
+
 
   const newAnecdote = () => {
 
@@ -39,14 +49,28 @@ const App = () => {
     copy[selected] += 1
     setPoints(copy)
     setVotes(copy[selected])
+    checkMostVotes(selected)
+  }
+
+  const checkMostVotes = (number) => {
+    console.log(number)
+
+    if (points[number] >= points[mostVotes]) {
+      setMostVotes(number)
+    }
   }
 
   return (
     <div>
+      <Header text="Anecdote of the day" />
       {anecdotes[selected]}
       <p>has {selectedVotes} votes</p>
       <Button text="vote" handleClick={addVote} />
       <Button text="next anecdote" handleClick={newAnecdote} />
+      <br/>
+      <Header text="Anecdote with the most votes" />
+      {anecdotes[mostVotes]}
+      <p>has {points[mostVotes]} votes</p>
     </div>
   )
 }
