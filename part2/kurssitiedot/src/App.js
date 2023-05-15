@@ -17,6 +17,11 @@ const App = () => {
         name: 'State of a component',
         exercises: 14,
         id: 3
+      },
+      {
+        name: 'Redux',
+        exercises: 11,
+        id: 4
       }
     ]
   }
@@ -47,6 +52,11 @@ const Header = ({text}) => {
 
 const Content = ({parts}) => {
 
+  let total = 0
+  for (let i = 0; i < parts.length; i++) {
+    total += parts[i].exercises
+  }
+
   return (
     <div>
       <ul>
@@ -54,6 +64,7 @@ const Content = ({parts}) => {
           <Part key={part.id} part={part}/>
         )}
       </ul>
+      <b>total of {total} exercises</b>
     </div>
   )
 }
