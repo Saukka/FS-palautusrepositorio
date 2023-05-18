@@ -43,6 +43,7 @@ const Course = ({course}) => {
 }
 
 const Header = ({text}) => {
+
   return (
     <div>
       <h1>{text}</h1>
@@ -52,10 +53,9 @@ const Header = ({text}) => {
 
 const Content = ({parts}) => {
 
-  let total = 0
-  for (let i = 0; i < parts.length; i++) {
-    total += parts[i].exercises
-  }
+const total = parts.reduce( (s, p) => {
+  return s + p.exercises
+}, 0)
 
   return (
     <div>
