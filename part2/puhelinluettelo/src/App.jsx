@@ -11,7 +11,7 @@ const App = () => {
   const [peopleToShow, setPeopleToShow] = useState(persons)
 
   useEffect(() => {
-    console.log('effect')
+    //console.log('effect')
     service
       .getAll()
       .then(persons => {
@@ -19,8 +19,7 @@ const App = () => {
         setPeopleToShow(persons)
       })
   }, [])
-  console.log('render', persons.length, ' persons')
-
+  //console.log('render', persons.length, ' persons')
 
   const addName = (event) => {
     event.preventDefault()
@@ -36,12 +35,25 @@ const App = () => {
         .create(person)
           .then(returnedPerson => {
             setPersons(persons.concat(returnedPerson))
-            
+            setNewName('')
+            setNewNumber('')
+            filterPeople(filter, persons.concat(returnedPerson))
           })
-      setNewName('')
-      setNewNumber('')
-      filterPeople(filter, persons.concat(person))
     }
+  }
+
+  const deletePerson = person => {
+    if (!window.confirm(`Delete ${person.name}?`)) {
+      return
+    }
+    service
+      .deletePerson(person.id)
+      .catch(error => {
+        alert('An error happened. This person has probably been deleted already')
+      })
+    const newPersons = persons.filter(p => p.id !== person.id)
+    setPersons(newPersons)
+    filterPeople(filter, newPersons)
   }
 
   const handleNameChange = (event) => {
@@ -68,7 +80,7 @@ const App = () => {
       <Filter filter={filter} handler={handleFilterChange} />
       <PersonForm addName={addName} name={newName} nameHandler={handleNameChange} number={newNumber} numberHandler={handleNumberChange}/>
       <h3>Numbers</h3>
-      <Persons people={peopleToShow} />
+      <Persons people={peopleToShow} removal={deletePerson}/>
     </div>
   )
 
@@ -107,12 +119,12 @@ const PersonForm = (props) => {
   )
 }
 
-const Persons = ({people}) => {
+const Persons = ({people, removal}) => {
   return (
     <div>
       <ul>
         {people.map(person =>
-          <Person key={person.name} person={person} />
+          <Person key={person.name} person={person} deletePerson={() => removal(person)}/>
           )}
       </ul>
     </div>
