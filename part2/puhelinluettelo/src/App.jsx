@@ -10,6 +10,10 @@ const App = () => {
   const [filter, setFilter] = useState('')
   const [peopleToShow, setPeopleToShow] = useState(persons)
   const [message, setMessage] = useState('')
+  const [notiColor, setColor] = useState()
+
+  const green = "notification"
+  const red = "errorNoti"
 
   useEffect(() => {
     service
@@ -37,8 +41,11 @@ const App = () => {
             const newPersons = persons.map(person => person.id !== changedPerson.id ? person : returnedPerson)
             setPersons(newPersons)
             filterPeople(filter, newPersons)
-            Noti(`Replaced number of ${changedPerson.name}`)
+            Noti(`Replaced number of ${changedPerson.name}`, green)
           })
+          .catch(
+            Noti(`Information of ${changedPerson.name} has already been removed from server`, red)
+          )
       } else {
         return
       }
@@ -50,7 +57,7 @@ const App = () => {
           setNewName('')
           setNewNumber('')
           filterPeople(filter, persons.concat(returnedPerson))
-          Noti(`Added ${returnedPerson.name}`)
+          Noti(`Added ${returnedPerson.name}`, green)
         })
     }
   }
@@ -63,15 +70,16 @@ const App = () => {
     service
       .deletePerson(person.id)
       .catch(error => {
-        alert('An error happened. This person has probably been deleted already')
+        Noti(`Information of ${name} has already been removed from server`, red)
       })
     const newPersons = persons.filter(p => p.id !== person.id)
     setPersons(newPersons)
     filterPeople(filter, newPersons)
-    Noti(`Deleted ${name}`)
+    Noti(`Deleted information of ${name}`, green)
   }
 
-  const Noti = message => {
+  const Noti = (message, color) => {
+    setColor(color)
     setMessage(message)
     setTimeout(() => {
       setMessage('')
@@ -83,7 +91,7 @@ const App = () => {
       return null
     }
     return (
-      <div className="notification">
+      <div className={notiColor}>
         {message}
       </div>
     )
