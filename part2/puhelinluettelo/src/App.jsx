@@ -11,7 +11,6 @@ const App = () => {
   const [peopleToShow, setPeopleToShow] = useState(persons)
 
   useEffect(() => {
-    //console.log('effect')
     service
       .getAll()
       .then(persons => {
@@ -19,7 +18,6 @@ const App = () => {
         setPeopleToShow(persons)
       })
   }, [])
-  //console.log('render', persons.length, ' persons')
 
   const addName = (event) => {
     event.preventDefault()
@@ -29,16 +27,28 @@ const App = () => {
     }
 
     if (persons.some(e => e.name === newName)) {
-      alert(`${newName} is already added to phonebook`)
+      if (window.confirm(`${newName} is already added to the phonebook, replace the old number with a new one?`)) {
+        const oldPerson = persons.find(person => person.name === newName)
+        const changedPerson = {...oldPerson, number: newNumber}
+        service
+          .update(changedPerson)
+          .then(returnedPerson => {
+            const newPersons = persons.map(person => person.id !== changedPerson.id ? person : returnedPerson)
+            setPersons(newPersons)
+            filterPeople(filter, newPersons)
+          })
+      } else {
+        return
+      }
     } else {
       service
         .create(person)
-          .then(returnedPerson => {
-            setPersons(persons.concat(returnedPerson))
-            setNewName('')
-            setNewNumber('')
-            filterPeople(filter, persons.concat(returnedPerson))
-          })
+        .then(returnedPerson => {
+          setPersons(persons.concat(returnedPerson))
+          setNewName('')
+          setNewNumber('')
+          filterPeople(filter, persons.concat(returnedPerson))
+        })
     }
   }
 
