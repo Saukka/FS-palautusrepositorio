@@ -9,6 +9,7 @@ const App = () => {
   const [newNumber, setNewNumber] = useState('')
   const [filter, setFilter] = useState('')
   const [peopleToShow, setPeopleToShow] = useState(persons)
+  const [message, setMessage] = useState('')
 
   useEffect(() => {
     service
@@ -36,6 +37,7 @@ const App = () => {
             const newPersons = persons.map(person => person.id !== changedPerson.id ? person : returnedPerson)
             setPersons(newPersons)
             filterPeople(filter, newPersons)
+            Noti(`Replaced number of ${changedPerson.name}`)
           })
       } else {
         return
@@ -48,6 +50,7 @@ const App = () => {
           setNewName('')
           setNewNumber('')
           filterPeople(filter, persons.concat(returnedPerson))
+          Noti(`Added ${returnedPerson.name}`)
         })
     }
   }
@@ -56,6 +59,7 @@ const App = () => {
     if (!window.confirm(`Delete ${person.name}?`)) {
       return
     }
+    const name = person.name
     service
       .deletePerson(person.id)
       .catch(error => {
@@ -64,6 +68,25 @@ const App = () => {
     const newPersons = persons.filter(p => p.id !== person.id)
     setPersons(newPersons)
     filterPeople(filter, newPersons)
+    Noti(`Deleted ${name}`)
+  }
+
+  const Noti = message => {
+    setMessage(message)
+    setTimeout(() => {
+      setMessage('')
+    }, 5000)
+  }
+
+  const Notification = ({ message }) => {
+    if (message === '') {
+      return null
+    }
+    return (
+      <div className="notification">
+        {message}
+      </div>
+    )
   }
 
   const handleNameChange = (event) => {
@@ -86,8 +109,9 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
-      <h3>Add a person</h3>
+      <Notification message={message} />
       <Filter filter={filter} handler={handleFilterChange} />
+      <h3>Add a person</h3>
       <PersonForm addName={addName} name={newName} nameHandler={handleNameChange} number={newNumber} numberHandler={handleNumberChange}/>
       <h3>Numbers</h3>
       <Persons people={peopleToShow} removal={deletePerson}/>
