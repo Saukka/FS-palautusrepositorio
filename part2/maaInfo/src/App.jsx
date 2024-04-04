@@ -3,9 +3,10 @@ import service from './services/countries'
 
 const App = () => {
 
-  const [filter, setFilter] = useState(["Finland"])
+  const [filter, setFilter] = useState("Finland")
   const [data, setData] = useState(null)
   const [countries, setCountries] = useState(null)
+  const [info, setInfo] = useState(null)
 
   useEffect(() =>{
     service
@@ -15,7 +16,12 @@ const App = () => {
       })
   }, [])
 
+  const infoToShow = country => {
+    setInfo(country)
+  }
+
   const handleCountryChange = (event) => {
+    setInfo(null)
     setFilter(event.target.value)
     setCountries(data.filter(country => country.name.common.toLowerCase().includes(event.target.value.toLowerCase())))
   }
@@ -26,24 +32,30 @@ const App = () => {
      value={filter}
      onChange={handleCountryChange}
      />
-    <Countries countries={countries} />
+    <Countries countries={countries} setInfo={infoToShow}/>
+    <CountryInfo country={info} />
     </div>
   )
 }
 
-const CountryName = ({country}) => {
+const CountryName = ({country, setInfo}) => {
   return (
-    <li>{country.name.common}</li>
+    <li>
+      {country.name.common} 
+    <button type="button" onClick={setInfo}>
+      show
+    </button>
+      </li>
   )
 }
 
-const Countries = ({countries}) => {
+const Countries = ({countries, setInfo}) => {
   if (countries === null || countries.length === 0) {
     return
   } else if (countries.length === 1) {
-    return (
+    return(
       <div>
-      <CountryInfo country={countries[0]}/>
+        <CountryInfo country={countries[0]}/>
       </div>
     )
   } else if (countries.length > 10) {
@@ -57,7 +69,7 @@ const Countries = ({countries}) => {
     <div>
       <ul>
       {countries.map(country =>
-        <CountryName key={country.name.common} country={country}/>
+        <CountryName key={country.name.common} country={country} setInfo={() => setInfo(country)}/>
       )}
       </ul>
     </div>
@@ -65,6 +77,10 @@ const Countries = ({countries}) => {
 }
 
 const CountryInfo = ({country}) => {
+
+  if (country === null) {
+    return
+  }
 
   return (
     <div>
