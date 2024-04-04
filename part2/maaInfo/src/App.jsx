@@ -82,13 +82,17 @@ const CountryInfo = ({country}) => {
     return
   }
 
+  const name = country.name.common
+  const capital = country.capital[0]
+  const area = country.area
+
   return (
     <div>
-      <h1>{country.name.common}</h1>
+      <h1>{name}</h1>
       <br></br>
-      <span>Capital {country.capital[0]}</span>
+      <span>Capital {capital}</span>
       <br></br>
-      <span>Area {country.area}</span>
+      <span>Area {area}</span>
       <br></br>
       <br></br>
       <b>languages</b>
@@ -100,7 +104,40 @@ const CountryInfo = ({country}) => {
         ))}
       </ul>
       <br></br>
-      <img src={country.flags.png}/>
+      <img src={country.flags.png} alt={country.flags.alt}/>
+      <Weather city={capital}/>
+    </div>
+  )
+}
+
+const Weather = ({city}) => {
+
+  const [weather, setWeather] = useState(null)
+
+  useEffect(() =>{
+    service
+    .getWeather(city)
+    .then(data => {
+      setWeather(data)
+    })
+  }, [])
+
+  if (weather === null) {
+    return
+  }
+  const temp = weather.current.temp_c
+  const icon = weather.current.condition.icon
+  const text = weather.current.condition.text
+  const wind = (weather.current.wind_kph / 3.6).toFixed(2)
+  
+  return (
+    <div>
+      <h2>Weather in {city}</h2>
+      <span>temperature {temp} Celsius</span>
+      <br></br>
+      <img src={icon} alt={text}/>
+      <br></br>
+      <span>wind {wind} m/s</span>
     </div>
   )
 }
